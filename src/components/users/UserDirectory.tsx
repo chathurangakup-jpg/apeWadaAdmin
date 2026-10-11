@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { UserDetailsDialog } from "./UserDetailsDialog";
 
 type RoleFilter = "ALL" | UserRole;
 
@@ -29,6 +30,9 @@ export function UserDirectory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedUser, setSelectedUser] = useState<AdminDirectoryUser | null>(
+    null,
+  );
 
   //   useEffect(() => {
   //     const controller = new AbortController();
@@ -226,7 +230,11 @@ export function UserDirectory() {
       ) : visibleUsers.length ? (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {visibleUsers.map((user) => (
-            <UserTile key={user.id} user={user} />
+            <UserTile
+              key={user.id}
+              user={user}
+              onSelect={() => setSelectedUser(user)}
+            />
           ))}
         </div>
       ) : (
@@ -241,6 +249,13 @@ export function UserDirectory() {
               : "Users will appear here once they register."}
           </p>
         </div>
+      )}
+
+      {selectedUser && (
+        <UserDetailsDialog
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
       )}
     </div>
   );
@@ -278,7 +293,13 @@ function CountTile({
   );
 }
 
-function UserTile({ user }: { user: AdminDirectoryUser }) {
+function UserTile({
+  user,
+  onSelect,
+}: {
+  user: AdminDirectoryUser;
+  onSelect: () => void;
+}) {
   const initials = user.name
     .trim()
     .split(/\s+/)
@@ -288,42 +309,59 @@ function UserTile({ user }: { user: AdminDirectoryUser }) {
     .toUpperCase();
 
   return (
-    <Card className="rounded-lg shadow-none">
-      <CardContent className="p-4">
-        <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700">
-            {initials || "U"}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="truncate font-semibold text-gray-900">
-                {user.name}
-              </h2>
-              <Badge variant={user.role === "WORKER" ? "info" : "default"}>
-                {user.role === "WORKER" ? "Worker" : "Customer"}
-              </Badge>
+    <div
+      role="button"
+      tabIndex={0}
+      aria-haspopup="dialog"
+      aria-label={`View ${user.role.toLowerCase()} profile for ${user.name}`}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
+      className="rounded-lg outline-none transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+    >
+      <Card className="h-full cursor-pointer rounded-lg shadow-none">
+        <CardContent className="p-4">
+          <div className="flex min-w-0 items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700">
+              {initials || "U"}
             </div>
-            <p className="mt-1 truncate text-sm text-gray-500">{user.email}</p>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="truncate font-semibold text-gray-900">
+                  {user.name}
+                </h2>
+                <Badge variant={user.role === "WORKER" ? "info" : "default"}>
+                  {user.role === "WORKER" ? "Worker" : "Customer"}
+                </Badge>
+              </div>
+              <p className="mt-1 truncate text-sm text-gray-500">
+                {user.email}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-4 space-y-2 border-t border-gray-100 pt-3 text-sm text-gray-600">
-          <p className="truncate">{user.phone || "No phone provided"}</p>
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
-            <span className="inline-flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5" />
-              Joined {formatDate(user.createdAt)}
-            </span>
-            {user.profile?.city && (
-              <span className="inline-flex items-center gap-1 truncate">
-                <MapPin className="h-3.5 w-3.5 shrink-0" />
-                {user.profile.city}
+          <div className="mt-4 space-y-2 border-t border-gray-100 pt-3 text-sm text-gray-600">
+            <p className="truncate">{user.phone || "No phone provided"}</p>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5" />
+                Joined {formatDate(user.createdAt)}
               </span>
-            )}
+              {user.profile?.city && (
+                <span className="inline-flex items-center gap-1 truncate">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  {user.profile.city}
+                </span>
+              )}
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
