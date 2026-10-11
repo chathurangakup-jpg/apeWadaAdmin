@@ -4,7 +4,7 @@ import {
   fetchCustomerById,
   fetchCustomers,
   updateCustomerStatus,
-} from "./customerThunk";
+} from "./userThunk";
 
 const initialState: CustomerState = {
   customers: [],

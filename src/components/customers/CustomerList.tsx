@@ -10,12 +10,12 @@ import {
   selectCustomerLoading,
   selectCustomerPagination,
   selectCustomers,
-} from "@/store/features/customer/customerSelector";
+} from "@/store/features/users/userSelector";
 import {
   clearSelectedCustomer,
   setFilters,
-} from "@/store/features/customer/customerSlice";
-import { fetchCustomers } from "@/store/features/customer/customerThunk";
+} from "@/store/features/users/userSlice";
+import { fetchCustomers } from "@/store/features/users/userThunk";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { CustomerFilters } from "@/types/customer.types";
 import { ChevronLeft, ChevronRight, RefreshCw, Search } from "lucide-react";

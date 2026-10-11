@@ -6,7 +6,7 @@ import {
 } from "@/types/customer.types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { customerService } from "./customerService";
+import { customerService } from "./userService";
 
 export const fetchCustomers = createAsyncThunk<
   CustomerListResponse,

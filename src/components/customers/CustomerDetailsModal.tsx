@@ -7,8 +7,8 @@ import { formatDate } from "@/lib/utils";
 import {
   selectCustomerLoading,
   selectSelectedCustomer,
-} from "@/store/features/customer/customerSelector";
-import { fetchCustomerById } from "@/store/features/customer/customerThunk";
+} from "@/store/features/users/userSelector";
+import { fetchCustomerById } from "@/store/features/users/userThunk";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   AlertTriangle,
