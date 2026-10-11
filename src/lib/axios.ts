@@ -13,6 +13,13 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    const token = authStorage.getUser();
+    console.log("Axios Request Interceptor: Token:", token); // Debugging line
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error),
@@ -24,12 +31,12 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const status = error.response?.status;
 
-    if (status === 401) {
-      await authStorage.clearAuth();
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
-    }
+    // if (status === 401) {
+    //   await authStorage.clearAuth();
+    //   if (typeof window !== "undefined") {
+    //     window.location.href = "/login";
+    //   }
+    // }
 
     if (status === 403) {
       // Handle forbidden

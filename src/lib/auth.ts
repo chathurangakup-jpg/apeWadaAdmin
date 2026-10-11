@@ -9,13 +9,9 @@ const USER_KEY = "apewada_admin_token";
 
 export const authStorage = {
   // Store non-sensitive user info (NOT the JWT)
-  setUser: (user: AdminUser): void => {
+  setUser: (token: string): void => {
     if (typeof window !== "undefined") {
-      Cookies.set(USER_KEY, JSON.stringify(user), {
-        expires: 7,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      });
+      Cookies.set(USER_KEY, JSON.stringify(token));
     }
   },
 
@@ -23,16 +19,6 @@ export const authStorage = {
     if (typeof window === "undefined") return null;
     const user = Cookies.get(USER_KEY);
     return user ? JSON.parse(user) : null;
-  },
-
-  // Token helpers - token is set/removed via API routes as HttpOnly
-  setTokenCookie: async (token: string): Promise<void> => {
-    await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-      credentials: "include",
-    });
   },
 
   clearAuth: async (): Promise<void> => {

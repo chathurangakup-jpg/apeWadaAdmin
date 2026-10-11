@@ -5,8 +5,18 @@ import {
   CustomerFilters,
   CustomerListResponse,
 } from "@/types/customer.types";
+import { AdminDirectoryUser, AdminUsersResponse } from "@/types/user.types";
 
 export const customerService = {
+  getUsers: async (signal?: AbortSignal): Promise<AdminDirectoryUser[]> => {
+    const response = await axiosInstance.get<ApiResponse<AdminUsersResponse>>(
+      "/admin/users",
+      { signal },
+    );
+    console.log("Fetched users:", response); // Debugging line
+    return response.data.data.users;
+  },
+
   getCustomers: async (
     filters: CustomerFilters,
   ): Promise<CustomerListResponse> => {

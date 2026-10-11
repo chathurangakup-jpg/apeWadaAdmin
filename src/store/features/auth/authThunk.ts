@@ -11,8 +11,8 @@ export const loginUser = createAsyncThunk<
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
     const data = await authService.login(credentials);
-    await authStorage.setTokenCookie(data.token);
-    authStorage.setUser(data.admin);
+    authStorage.setUser(data.token);
+
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

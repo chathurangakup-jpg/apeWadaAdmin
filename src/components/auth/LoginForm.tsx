@@ -51,7 +51,7 @@ export function LoginForm() {
     if (!validate()) return;
 
     const result = await dispatch(loginUser(formData));
-
+    console.log("Login result:", result);
     if (loginUser.fulfilled.match(result)) {
       router.push("/dashboard");
     }

@@ -1,9 +1,9 @@
-import { CustomerList } from "@/components/customers/CustomerList";
+import { UserDirectory } from "@/components/users/UserDirectory";
 
 export const metadata = {
-  title: "Customers | ApeWada Admin",
+  title: "Users | ApeWada Admin",
 };
 
-export default function CustomersPage() {
-  return <CustomerList />;
+export default function UsersPage() {
+  return <UserDirectory />;
 }
